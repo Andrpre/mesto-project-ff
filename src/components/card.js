@@ -1,7 +1,6 @@
-const cardTemplate = document.querySelector("#card-template").content.querySelector(".places__item");
-const placesList = document.querySelector(".places__list");
+import { closeModal } from './modal.js';
 
-function createCard(name, link, handleDeleteCard) {
+function createCard(name, link, handleDeleteCard, cardTemplate) {
     const cardElement = cardTemplate.cloneNode(true);
     const imageElement = cardElement.querySelector(".card__image");
     imageElement.src = link;
@@ -20,10 +19,16 @@ function handleDeleteCard(cardElement) {
     cardElement.remove();
 }
 
-function renderCard(location) {
+function renderCard(location, initialCards, cardTemplate) {
     initialCards.forEach(function (item) {
-        location.append(createCard(item.name, item.link, handleDeleteCard));
+        location.append(createCard(item.name, item.link, handleDeleteCard, cardTemplate));
     });
 }
 
-renderCard(placesList);
+function handleAddCard(evt, popupNewCard, nameInput, urlInput, cardTemplate, location){
+    evt.preventDefault();
+    location.prepend(createCard(nameInput.value, urlInput.value, handleDeleteCard, cardTemplate));
+    closeModal(popupNewCard);
+}
+
+export { createCard, handleDeleteCard, renderCard, handleAddCard };
