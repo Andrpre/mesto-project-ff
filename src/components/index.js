@@ -1,7 +1,7 @@
-import '../pages/index.css';
-import { initialCards } from './cards.js';
-import { createCard, handleDeleteCard, renderCard, handleAddCard } from './card.js';
-import { openModal, closeModal, closeWithEsc, closeWithOverlay, addingCurrentData, handleFormSubmit } from './modal.js';
+import "../pages/index.css";
+import { initialCards } from "./cards.js";
+import { renderCard, addCard } from "./card.js";
+import { openModal, closeModal, closeWithEsc, closeWithOverlay, addCurrentData, handleFormSubmit, handleOpenImage } from "./modal.js";
 
 const placesList = document.querySelector(".places__list");
 const cardTemplate = document.querySelector("#card-template").content.querySelector(".places__item");
@@ -10,35 +10,35 @@ const editProfileButton = document.querySelector(".profile__edit-button");
 const popupEditProfile = document.querySelector(".popup_type_edit");
 const closeEditProfileButton = popupEditProfile.querySelector(".popup__close");
 
-const profileTitle = document.querySelector('.profile__title');
-const profileDescription = document.querySelector('.profile__description');
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
 
 const addCardButton = document.querySelector(".profile__add-button");
 const popupNewCard = document.querySelector(".popup_type_new-card");
 const closeNewCardButton = popupNewCard.querySelector(".popup__close");
 
-const formElement = popupNewCard.querySelector(".popup__form");
-const nameInput = formElement.querySelector(".popup__input_type_card-name");
-const urlInput = formElement.querySelector(".popup__input_type_url");
+const newCardFormElement = popupNewCard.querySelector(".popup__form");
+const newCardNameInput = newCardFormElement.querySelector(".popup__input_type_card-name");
+const newCardUrlInput = newCardFormElement.querySelector(".popup__input_type_url");
 
-editProfileButton.addEventListener('click', () => {
-    const formElement = popupEditProfile.querySelector(".popup__form");
-    const nameInput = formElement.querySelector(".popup__input_type_name");
-    const jobInput = formElement.querySelector(".popup__input_type_description");
+const editProfileFormElement = popupEditProfile.querySelector(".popup__form");
+const editProfileNameInput = editProfileFormElement.querySelector(".popup__input_type_name");
+const editProfileJobInput = editProfileFormElement.querySelector(".popup__input_type_description");
 
+const imageElementPopup = document.querySelector(".popup_type_image");
+
+editProfileButton.addEventListener("click", () => {
     openModal(popupEditProfile, closeWithEsc, closeWithOverlay);
-    
-    addingCurrentData(profileTitle, profileDescription, nameInput, jobInput);
-    formElement.addEventListener('submit', (evt) => handleFormSubmit(evt, popupEditProfile));
-
-    closeEditProfileButton.addEventListener('click', () => closeModal(popupEditProfile, closeWithEsc, closeWithOverlay));
+    addCurrentData(profileTitle, profileDescription, editProfileNameInput, editProfileJobInput);
+    closeEditProfileButton.addEventListener("click", () => closeModal(popupEditProfile, closeWithEsc, closeWithOverlay));
 });
 
-addCardButton.addEventListener('click', () => {
+addCardButton.addEventListener("click", () => {
     openModal(popupNewCard, closeWithEsc, closeWithOverlay);
-    closeNewCardButton.addEventListener('click', () => closeModal(popupNewCard, closeWithEsc, closeWithOverlay));
+    closeNewCardButton.addEventListener("click", () => closeModal(popupNewCard, closeWithEsc, closeWithOverlay));
 });
 
-formElement.addEventListener('submit', (evt) => handleAddCard(evt, popupNewCard, nameInput, urlInput, cardTemplate, placesList));
+newCardFormElement.addEventListener("submit", (evt) => addCard(evt, popupNewCard, newCardNameInput, newCardUrlInput, cardTemplate, placesList, imageElementPopup, handleOpenImage, closeModal));
+editProfileFormElement.addEventListener("submit", (evt) => handleFormSubmit(evt, popupEditProfile, profileTitle, profileDescription));
 
-renderCard(placesList, initialCards, cardTemplate);
+renderCard(placesList, initialCards, cardTemplate, imageElementPopup, handleOpenImage);

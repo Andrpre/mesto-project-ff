@@ -3,11 +3,12 @@ function closeWithEsc(evt, item) {
 }
 
 function closeWithOverlay(evt, item) {
-    item === evt.target ? (item.style.display = "none") : "";
+    item === evt.target ? closeModal(item) : "";
 }
 
 function openModal(item, closeWithEsc, closeWithOverlay) {
-    item.style.display = "flex";
+    item.classList.add("popup_is-opened");
+    item.classList.remove("popup_is-animated");
 
     const listenerEsc = (evt) => closeWithEsc(evt, item);
     document.addEventListener("keydown", listenerEsc);
@@ -16,8 +17,21 @@ function openModal(item, closeWithEsc, closeWithOverlay) {
     item.addEventListener("click", listenerOverlay);
 }
 
+function handleOpenImage(imageElementPopup, name, link) {
+    const popupImage = imageElementPopup.querySelector(".popup__image");
+    const popupClose = imageElementPopup.querySelector(".popup__close");
+
+    popupImage.src = link;
+    popupImage.alt = name;
+    imageElementPopup.querySelector(".popup__caption").textContent = name;
+
+    openModal(imageElementPopup, closeWithEsc, closeWithOverlay);
+    popupClose.addEventListener("click", () => closeModal(imageElementPopup, closeWithEsc, closeWithOverlay));
+}
+
 function closeModal(item, closeWithEsc, closeWithOverlay) {
-    item.style.display = "none";
+    item.classList.remove("popup_is-opened");
+    item.classList.add("popup_is-animated");
 
     const listenerEsc = (evt) => closeWithEsc(evt, item);
     document.removeEventListener("keydown", listenerEsc);
@@ -26,20 +40,16 @@ function closeModal(item, closeWithEsc, closeWithOverlay) {
     item.removeEventListener("click", listenerOverlay);
 }
 
-function addingCurrentData(profileTitle, profileDescription, nameInput, jobInput) {
+function addCurrentData(profileTitle, profileDescription, nameInput, jobInput) {
     nameInput.value = profileTitle.textContent;
     jobInput.value = profileDescription.textContent;
 }
 
-
-function handleFormSubmit(evt, popupEditProfile) {
+function handleFormSubmit(evt, popupEditProfile, profileTitle, profileDescription) {
     evt.preventDefault();
 
     const jobInput = evt.target.elements.name.value;
     const nameInput = evt.target.elements.description.value;
-
-    const profileTitle = document.querySelector(".profile__title");
-    const profileDescription = document.querySelector(".profile__description");
 
     profileTitle.textContent = jobInput;
     profileDescription.textContent = nameInput;
@@ -47,4 +57,4 @@ function handleFormSubmit(evt, popupEditProfile) {
     closeModal(popupEditProfile);
 }
 
-export { openModal, closeModal, closeWithEsc, closeWithOverlay, addingCurrentData, handleFormSubmit };
+export { openModal, closeModal, closeWithEsc, closeWithOverlay, addCurrentData, handleFormSubmit, handleOpenImage };
