@@ -1,4 +1,4 @@
-function createCard(name, link, imageElementPopup, cardTemplate, handleDeleteCard, handleLikeCard, handleOpenImage) {
+function createCard(name, link, cardTemplate, handleDeleteCard, handleLikeCard, handleOpenImage) {
     const cardElement = cardTemplate.cloneNode(true);
     const imageElement = cardElement.querySelector(".card__image");
     const deleteButton = cardElement.querySelector(".card__delete-button");
@@ -8,15 +8,9 @@ function createCard(name, link, imageElementPopup, cardTemplate, handleDeleteCar
     imageElement.alt = name;
     cardElement.querySelector(".card__title").textContent = name;
 
-    imageElement.addEventListener("click", () => {
-        handleOpenImage(imageElementPopup, name, link);
-    });
-    deleteButton.addEventListener("click", () => {
-        handleDeleteCard(cardElement);
-    });
-    likeButton.addEventListener("click", () => {
-        handleLikeCard(likeButton);
-    });
+    imageElement.addEventListener("click", () => { handleOpenImage(name, link) });
+    deleteButton.addEventListener("click", () => { handleDeleteCard(cardElement) });
+    likeButton.addEventListener("click", () => { handleLikeCard(likeButton) });
 
     return cardElement;
 }
@@ -33,17 +27,10 @@ function handleLikeCard(likeButton) {
     }
 }
 
-function renderCard(location, initialCards, cardTemplate, imageElementPopup, handleOpenImage) {
+function renderCard(location, initialCards, cardTemplate, handleOpenImage) {
     initialCards.forEach(function (item) {
-        location.append(createCard(item.name, item.link, imageElementPopup, cardTemplate, handleDeleteCard, handleLikeCard, handleOpenImage));
+        location.append(createCard(item.name, item.link, cardTemplate, handleDeleteCard, handleLikeCard, handleOpenImage));
     });
 }
 
-function addCard(evt, popupNewCard, nameInput, urlInput, cardTemplate, location, imageElementPopup, handleOpenImage, closeModal) {
-    evt.preventDefault();
-    location.prepend(createCard(nameInput.value, urlInput.value, imageElementPopup, cardTemplate, handleDeleteCard, handleLikeCard, handleOpenImage));
-    closeModal(popupNewCard);
-    evt.target.reset();
-}
-
-export { renderCard, addCard };
+export { renderCard, createCard, handleDeleteCard, handleLikeCard };
