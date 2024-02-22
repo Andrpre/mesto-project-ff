@@ -1,6 +1,6 @@
 import "../pages/index.css";
 import { initialCards } from "./cards.js";
-import { renderCard, createCard, handleDeleteCard, handleLikeCard } from "./card.js";
+import { createCard, handleDeleteCard, handleLikeCard } from "./card.js";
 import { openModal, closeModal } from "./modal.js";
 
 const placesList = document.querySelector(".places__list");
@@ -34,7 +34,10 @@ editProfileButton.addEventListener("click", () => {
     openModal(popupEditProfile);
     fillInEditFormInputs();
 });
-addCardButton.addEventListener("click", () => { openModal(popupNewCard) });
+addCardButton.addEventListener("click", () => {
+    openModal(popupNewCard);
+    newCardFormElement.reset();
+});
 
 closeEditProfileButton.addEventListener("click", () => closeModal(popupEditProfile));
 closeNewCardButton.addEventListener("click", () => closeModal(popupNewCard));
@@ -67,6 +70,12 @@ function handleOpenImage(name, link) {
     popupImage.alt = name;
     popupImageCaption.textContent = name;
     openModal(imageElementPopup);
+}
+
+function renderCard(location, initialCards, cardTemplate, handleOpenImage) {
+    initialCards.forEach(function (item) {
+        location.append(createCard(item.name, item.link, cardTemplate, handleDeleteCard, handleLikeCard, handleOpenImage));
+    });
 }
 
 renderCard(placesList, initialCards, cardTemplate, handleOpenImage);

@@ -27,10 +27,4 @@ function handleLikeCard(likeButton) {
     }
 }
 
-function renderCard(location, initialCards, cardTemplate, handleOpenImage) {
-    initialCards.forEach(function (item) {
-        location.append(createCard(item.name, item.link, cardTemplate, handleDeleteCard, handleLikeCard, handleOpenImage));
-    });
-}
-
-export { renderCard, createCard, handleDeleteCard, handleLikeCard };
+export { createCard, handleDeleteCard, handleLikeCard };
