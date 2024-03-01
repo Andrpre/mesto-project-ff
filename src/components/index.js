@@ -2,6 +2,8 @@ import "../pages/index.css";
 import { initialCards } from "./cards.js";
 import { createCard, handleDeleteCard, handleLikeCard } from "./card.js";
 import { openModal, closeModal } from "./modal.js";
+import { enableValidation, clearValidation } from "./validation.js";
+import { requestUserData, requestCardsData } from "./api.js";
 
 const placesList = document.querySelector(".places__list");
 const cardTemplate = document.querySelector("#card-template").content.querySelector(".places__item");
@@ -10,6 +12,7 @@ const editProfileButton = document.querySelector(".profile__edit-button");
 const popupEditProfile = document.querySelector(".popup_type_edit");
 const closeEditProfileButton = popupEditProfile.querySelector(".popup__close");
 
+const profileImage = document.querySelector(".profile__image");
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 
@@ -33,6 +36,7 @@ const popupImageCloseButton = imageElementPopup.querySelector(".popup__close");
 editProfileButton.addEventListener("click", () => {
     openModal(popupEditProfile);
     fillInEditFormInputs();
+    clearValidation(editProfileFormElement, validationConfig);
 });
 addCardButton.addEventListener("click", () => {
     openModal(popupNewCard);
@@ -43,7 +47,10 @@ closeEditProfileButton.addEventListener("click", () => closeModal(popupEditProfi
 closeNewCardButton.addEventListener("click", () => closeModal(popupNewCard));
 popupImageCloseButton.addEventListener("click", () => closeModal(imageElementPopup));
 
-newCardFormElement.addEventListener("submit", (evt) => submitAddCardForm(evt));
+newCardFormElement.addEventListener("submit", (evt) => {
+    submitAddCardForm(evt);
+    clearValidation(newCardFormElement, validationConfig);
+});
 editProfileFormElement.addEventListener("submit", (evt) => submitEditProfileForm(evt));
 
 function fillInEditFormInputs() {
@@ -78,4 +85,29 @@ function renderCard(location, initialCards, cardTemplate, handleOpenImage) {
     });
 }
 
-renderCard(placesList, initialCards, cardTemplate, handleOpenImage);
+const validationConfig = {
+    formSelector: ".popup__form",
+    inputSelector: ".popup__input",
+    submitButtonSelector: ".popup__button",
+    inactiveButtonClass: "popup__button_disabled",
+    inputErrorClass: "popup__input_type_error"
+}
+
+enableValidation(validationConfig);
+
+const apiConfig = {
+    token: "dc67c79f-1c3d-4338-96c1-1207986f4fe9",
+    cohortId: "wff-cohort-8"
+}
+
+Promise.all([requestUserData(apiConfig), requestCardsData(apiConfig)])
+    .then((data) => {
+        profileTitle.textContent = data[0].name;
+        profileDescription.textContent = data[0].about;
+        profileImage.style.backgroundImage = `url('${data[0].avatar}')`;
+        
+        renderCard(placesList, data[1], cardTemplate, handleOpenImage);
+    })
+    .catch((err) => {
+        console.log(err);
+    });
