@@ -3,7 +3,20 @@ import { initialCards } from "./cards.js";
 import { createCard, handleDeleteCard, handleLikeCard } from "./card.js";
 import { openModal, closeModal } from "./modal.js";
 import { enableValidation, clearValidation } from "./validation.js";
-import { requestUserData, requestCardsData } from "./api.js";
+import { requestUserData, updateUserData, requestCardsData, uploadCardData } from "./api.js";
+
+const apiConfig = {
+    token: "dc67c79f-1c3d-4338-96c1-1207986f4fe9",
+    cohortId: "wff-cohort-8"
+}
+
+const validationConfig = {
+    formSelector: ".popup__form",
+    inputSelector: ".popup__input",
+    submitButtonSelector: ".popup__button",
+    inactiveButtonClass: "popup__button_disabled",
+    inputErrorClass: "popup__input_type_error"
+}
 
 const placesList = document.querySelector(".places__list");
 const cardTemplate = document.querySelector("#card-template").content.querySelector(".places__item");
@@ -60,16 +73,33 @@ function fillInEditFormInputs() {
 
 function submitEditProfileForm(evt) {
     evt.preventDefault();
-    profileTitle.textContent = evt.target.elements.name.value;
-    profileDescription.textContent = evt.target.elements.description.value;
-    closeModal(popupEditProfile);
+    const name = evt.target.elements.name.value;
+    const description = evt.target.elements.description.value;
+
+    updateUserData(apiConfig, name, description)
+        .then((data) => {
+            profileTitle.textContent = data.name;
+            profileDescription.textContent = data.about;
+
+            closeModal(popupEditProfile);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 }
 
 function submitAddCardForm(evt) {
     evt.preventDefault();
-    placesList.prepend(createCard(newCardNameInput.value, newCardUrlInput.value, cardTemplate, handleDeleteCard, handleLikeCard, handleOpenImage));
-    closeModal(popupNewCard);
-    evt.target.reset();
+
+    uploadCardData(apiConfig, newCardNameInput.value, newCardUrlInput.value)
+        .then((data) => {
+            placesList.prepend(createCard(data.name, data.link, cardTemplate, handleDeleteCard, handleLikeCard, handleOpenImage));
+            closeModal(popupNewCard);
+            evt.target.reset();
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 }
 
 function handleOpenImage(name, link) {
@@ -85,20 +115,7 @@ function renderCard(location, initialCards, cardTemplate, handleOpenImage) {
     });
 }
 
-const validationConfig = {
-    formSelector: ".popup__form",
-    inputSelector: ".popup__input",
-    submitButtonSelector: ".popup__button",
-    inactiveButtonClass: "popup__button_disabled",
-    inputErrorClass: "popup__input_type_error"
-}
-
 enableValidation(validationConfig);
-
-const apiConfig = {
-    token: "dc67c79f-1c3d-4338-96c1-1207986f4fe9",
-    cohortId: "wff-cohort-8"
-}
 
 Promise.all([requestUserData(apiConfig), requestCardsData(apiConfig)])
     .then((data) => {
