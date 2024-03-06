@@ -13,7 +13,7 @@
             </header>
             <main class="content">
                 <section class="profile page__section">
-                    <div class="profile__image"></div>
+                    <button class="profile__image" type="button"></button>
                     <div class="profile__info">
                         <h1 class="profile__title"></h1>
                         <button class="profile__edit-button" type="button"></button>
@@ -37,6 +37,26 @@
                         <span class="popup__error_visible name-input-error"></span>
                         <input id="description-input" type="text" name="description" class="popup__input popup__input_type_description" placeholder="Занятие" minlength="2" maxlength="200" data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы" pattern="^[a-zA-Zа-яА-я\-\s]+$" required />
                         <span class="popup__error_visible description-input-error"></span>
+                        <button type="submit" class="button popup__button">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+            <div class="popup popup_is-animated popup_type_delete-card">
+                <div class="popup__content">
+                    <button type="button" class="popup__close"></button>
+                    <h3 class="popup__title">Вы уверены?</h3>
+                    <form class="popup__form" name="delete-card">
+                        <button type="submit" class="button popup__button">Да</button>
+                    </form>
+                </div>
+            </div>
+            <div class="popup popup_is-animated popup_type_edit_avatar">
+                <div class="popup__content">
+                    <button type="button" class="popup__close"></button>
+                    <h3 class="popup__title">Обновить аватар</h3>
+                    <form class="popup__form" name="edit-avatar-profile" novalidate>
+                        <input id="avatar-link-input" type="url" name="avatar-link" class="popup__input popup__input_type_url_avatar" placeholder="Ссылка на картинку" data-error-message="Вставьте ссылку на картинку" pattern="https?:\/\/\S+\.\S+" required />
+                        <span class="popup__error_visible avatar-link-input-error"></span>
                         <button type="submit" class="button popup__button">Сохранить</button>
                     </form>
                 </div>
@@ -69,7 +89,10 @@
                 <button type="button" class="card__delete-button"></button>
                 <div class="card__description">
                     <h2 class="card__title"></h2>
-                    <button type="button" class="card__like-button"></button>
+                    <div class="card__like">
+                        <button type="button" class="card__like-button"></button>
+                        <span class="card__like-counter"></span>
+                    </div>
                 </div>
             </li>
         </template>
