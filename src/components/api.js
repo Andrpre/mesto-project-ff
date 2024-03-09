@@ -3,17 +3,21 @@ const apiConfig = {
     cohortId: "wff-cohort-8",
 };
 
+const handleResponse = (res) => {
+    if (res.ok) {
+        return res.json();
+    } else {
+        return Promise.reject(`Ошибка: ${res.status}`);
+    }
+};
+
 const requestUserData = () => {
     return fetch(`https://nomoreparties.co/v1/${apiConfig.cohortId}/users/me`, {
         headers: {
             authorization: apiConfig.token,
         },
     }).then((res) => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Ошибка: ${res.status}`);
-        }
+        return handleResponse(res);
     });
 };
 
@@ -29,11 +33,7 @@ const updateUserData = (nameUpdate, descriptionUpdate) => {
             about: descriptionUpdate,
         }),
     }).then((res) => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Ошибка: ${res.status}`);
-        }
+        return handleResponse(res);
     });
 };
 
@@ -48,11 +48,7 @@ const updateUserAvatar = (urlUpdate) => {
             avatar: urlUpdate,
         }),
     }).then((res) => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Ошибка: ${res.status}`);
-        }
+        return handleResponse(res);
     });
 };
 
@@ -62,11 +58,7 @@ const requestCardsData = () => {
             authorization: apiConfig.token,
         },
     }).then((res) => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Ошибка: ${res.status}`);
-        }
+        return handleResponse(res);
     });
 };
 
@@ -82,11 +74,7 @@ const uploadCardData = (nameUpload, linkUpload) => {
             link: linkUpload,
         }),
     }).then((res) => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Ошибка: ${res.status}`);
-        }
+        return handleResponse(res);
     });
 };
 
@@ -97,11 +85,7 @@ const deleteCardData = (cardId) => {
             authorization: apiConfig.token,
         },
     }).then((res) => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Ошибка: ${res.status}`);
-        }
+        return handleResponse(res);
     });
 };
 
@@ -112,11 +96,7 @@ const pushLikeCard = (cardId) => {
             authorization: apiConfig.token,
         },
     }).then((res) => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Ошибка: ${res.status}`);
-        }
+        return handleResponse(res);
     });
 };
 
@@ -127,11 +107,7 @@ const deleteLikeCard = (cardId) => {
             authorization: apiConfig.token,
         },
     }).then((res) => {
-        if (res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Ошибка: ${res.status}`);
-        }
+        return handleResponse(res);
     });
 };
 

@@ -1,14 +1,9 @@
 function closeWithEsc(evt) {
-    if (evt.key === "Escape") {
-        closeModal(document.querySelector(".popup_is-opened"));
-    }
+    evt.key === "Escape" ? closeModal(document.querySelector(".popup_is-opened")) : "";
 }
 
 function closeWithOverlay(evt) {
-    const item = document.querySelector(".popup_is-opened");
-    if (item === evt.target) {
-        closeModal(item);
-    }
+    evt.currentTarget === evt.target ? closeModal(evt.currentTarget) : "";
 }
 
 function openModal(item) {

@@ -1,8 +1,8 @@
 import "../pages/index.css";
-import { createCard } from "./card.js";
+import { createCard, handleDeleteCard } from "./card.js";
 import { openModal, closeModal } from "./modal.js";
 import { enableValidation, clearValidation } from "./validation.js";
-import { requestUserData, updateUserData, requestCardsData, uploadCardData, updateUserAvatar } from "./api.js";
+import { requestUserData, updateUserData, requestCardsData, uploadCardData, updateUserAvatar, deleteCardData, pushLikeCard, deleteLikeCard } from "./api.js";
 
 const validationConfig = {
     formSelector: ".popup__form",
@@ -34,9 +34,9 @@ const newCardFormElement = popupNewCard.querySelector(".popup__form");
 const newCardNameInput = newCardFormElement.querySelector(".popup__input_type_card-name");
 const newCardUrlInput = newCardFormElement.querySelector(".popup__input_type_url");
 
-export const popupDeleteCard = document.querySelector(".popup_type_delete-card");
+const popupDeleteCard = document.querySelector(".popup_type_delete-card");
 const closeDeleteCardButton = popupDeleteCard.querySelector(".popup__close");
-export const deleteCardFormElement = popupDeleteCard.querySelector(".popup__form");
+const deleteCardFormElement = popupDeleteCard.querySelector(".popup__form");
 
 const editProfileAvatarFormElement = popupEditProfileAvatar.querySelector(".popup__form");
 const editProfileAvatarInput = editProfileAvatarFormElement.querySelector(".popup__input_type_url_avatar");
@@ -76,6 +76,10 @@ newCardFormElement.addEventListener("submit", (evt) => {
     submitAddCardForm(evt);
     clearValidation(newCardFormElement, validationConfig);
 });
+deleteCardFormElement.addEventListener("submit", (evt) => {
+    evt.preventDefault();
+    handleDeleteCard(cardToDelete, cardIdToDelete, deleteCardData, closeModal, popupDeleteCard);
+});
 
 function fillInEditFormInputs() {
     editProfileNameInput.value = profileTitle.textContent;
@@ -83,7 +87,7 @@ function fillInEditFormInputs() {
 }
 
 function displayDownloadProcess(button, display) {
-    display ? (button.textContent = "Сохранение...") : (button.textContent = "Сохранить");
+    button.textContent = display ? "Сохранение..." : "Сохранить";
 }
 
 function submitEditProfileAvatarForm(evt) {
@@ -97,10 +101,12 @@ function submitEditProfileAvatarForm(evt) {
         .then((data) => {
             editProfileAvatarButton.style.backgroundImage = `url('${data.avatar}')`;
             closeModal(popupEditProfileAvatar);
-            displayDownloadProcess(submitButton, false);
         })
         .catch((err) => {
             console.error(err);
+        })
+        .finally(() => {
+            displayDownloadProcess(submitButton, false);
         });
 }
 
@@ -117,10 +123,12 @@ function submitEditProfileForm(evt) {
             profileTitle.textContent = data.name;
             profileDescription.textContent = data.about;
             closeModal(popupEditProfile);
-            displayDownloadProcess(submitButton, false);
         })
         .catch((err) => {
             console.error(err);
+        })
+        .finally(() => {
+            displayDownloadProcess(submitButton, false);
         });
 }
 
@@ -130,15 +138,17 @@ function submitAddCardForm(evt) {
 
     displayDownloadProcess(submitButton, true);
 
-    Promise.all([requestUserData(), uploadCardData(newCardNameInput.value, newCardUrlInput.value)])
+    uploadCardData(newCardNameInput.value, newCardUrlInput.value)
         .then((data) => {
-            placesList.prepend(createCard(data[0]._id, data[1], cardTemplate, handleOpenImage));
+            placesList.prepend(createCard(userId, data, cardTemplate, handleOpenImage, pushLikeCard, deleteLikeCard));
             closeModal(popupNewCard);
-            displayDownloadProcess(submitButton, false);
             evt.target.reset();
         })
         .catch((err) => {
             console.error(err);
+        })
+        .finally(() => {
+            displayDownloadProcess(submitButton, false);
         });
 }
 
@@ -149,19 +159,30 @@ function handleOpenImage(name, link) {
     openModal(imageElementPopup);
 }
 
-function renderCard(location, userDataId, initialCards) {
+let cardToDelete, cardIdToDelete;
+export function deleteCallback(cardId, cardElement) {
+    openModal(popupDeleteCard);
+    cardIdToDelete = cardId;
+    cardToDelete = cardElement;
+}
+
+function renderCards(location, userDataId, initialCards) {
     initialCards.forEach((itemCard) => {
-        location.append(createCard(userDataId, itemCard, cardTemplate, handleOpenImage));
+        location.append(createCard(userDataId, itemCard, cardTemplate, handleOpenImage, pushLikeCard, deleteLikeCard));
     });
 }
 
+let userId;
 Promise.all([requestUserData(), requestCardsData()])
     .then((data) => {
-        profileTitle.textContent = data[0].name;
-        profileDescription.textContent = data[0].about;
-        editProfileAvatarButton.style.backgroundImage = `url('${data[0].avatar}')`;
+        const [userData, initialCards] = data;
 
-        renderCard(placesList, data[0]._id, data[1]);
+        profileTitle.textContent = userData.name;
+        profileDescription.textContent = userData.about;
+        editProfileAvatarButton.style.backgroundImage = `url('${userData.avatar}')`;
+        userId = userData._id;
+
+        renderCards(placesList, userData._id, initialCards);
     })
     .catch((err) => {
         console.error(err);
