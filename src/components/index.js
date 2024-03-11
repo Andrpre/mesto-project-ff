@@ -140,7 +140,7 @@ function submitAddCardForm(evt) {
 
     uploadCardData(newCardNameInput.value, newCardUrlInput.value)
         .then((data) => {
-            placesList.prepend(createCard(userId, data, cardTemplate, handleOpenImage, pushLikeCard, deleteLikeCard));
+            placesList.prepend(createCard(userId, data, cardTemplate, handleOpenImage, pushLikeCard, deleteLikeCard, deleteCallback));
             closeModal(popupNewCard);
             evt.target.reset();
         })
@@ -160,7 +160,7 @@ function handleOpenImage(name, link) {
 }
 
 let cardToDelete, cardIdToDelete;
-export function deleteCallback(cardId, cardElement) {
+function deleteCallback(cardId, cardElement) {
     openModal(popupDeleteCard);
     cardIdToDelete = cardId;
     cardToDelete = cardElement;
@@ -168,7 +168,7 @@ export function deleteCallback(cardId, cardElement) {
 
 function renderCards(location, userDataId, initialCards) {
     initialCards.forEach((itemCard) => {
-        location.append(createCard(userDataId, itemCard, cardTemplate, handleOpenImage, pushLikeCard, deleteLikeCard));
+        location.append(createCard(userDataId, itemCard, cardTemplate, handleOpenImage, pushLikeCard, deleteLikeCard, deleteCallback));
     });
 }
 

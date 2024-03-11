@@ -1,6 +1,4 @@
-import { deleteCallback } from "./index.js";
-
-function createCard(userDataId, itemCard, cardTemplate, handleOpenImage, pushLikeCard, deleteLikeCard) {
+function createCard(userDataId, itemCard, cardTemplate, handleOpenImage, pushLikeCard, deleteLikeCard, deleteCallback) {
     const cardElement = cardTemplate.cloneNode(true);
     const imageElement = cardElement.querySelector(".card__image");
     const deleteButton = cardElement.querySelector(".card__delete-button");
@@ -13,7 +11,7 @@ function createCard(userDataId, itemCard, cardTemplate, handleOpenImage, pushLik
     counterCardlikes.textContent = itemCard.likes.length;
 
     setLikeIfExists(itemCard.likes, userDataId, likeButton);
-    initDeleteButton(cardElement, userDataId, itemCard, deleteButton);
+    initDeleteButton(cardElement, userDataId, itemCard, deleteButton, deleteCallback);
 
     imageElement.addEventListener("click", () => {
         handleOpenImage(itemCard.name, itemCard.link);
@@ -31,7 +29,7 @@ function setLikeIfExists(arrayLikes, userDataId, likeButton) {
     }
 }
 
-function initDeleteButton(cardElement, userDataId, itemCard, deleteButton) {
+function initDeleteButton(cardElement, userDataId, itemCard, deleteButton, deleteCallback) {
     if (userDataId === itemCard.owner._id) {
         deleteButton.addEventListener("click", () => {
             deleteCallback(itemCard._id, cardElement);
