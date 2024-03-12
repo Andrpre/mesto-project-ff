@@ -49,7 +49,3 @@ npm run dev
 ### Демонстрация
 
 Вы можете посмотреть демонстрацию проекта [здесь](https://andrpre.ru/projects/mesto-project-ff/).
-
-### Авторы
-
-Андрей Кожухов ([@Andrpre](https://t.me/Andrpre))
