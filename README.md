@@ -50,7 +50,7 @@ npm run dev
 
 ### Демонстрация
 
-Вы можете посмотреть демонстрацию проекта [здесь](https://andrpre.ru/mesto-project-ff/).
+Вы можете посмотреть демонстрацию проекта [здесь](https://andrpre.ru/projects/mesto-project-ff/).
 
 ### Авторы
 
